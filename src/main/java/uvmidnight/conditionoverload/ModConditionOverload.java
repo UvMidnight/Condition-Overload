@@ -29,20 +29,27 @@ public class ModConditionOverload extends ModifierTrait {
 
     @Override
     public float damage(ItemStack tool, EntityLivingBase player, EntityLivingBase target, float damage, float newDamage, boolean isCritical) {
+        //go through the potion effects on the target, see which ones are negative
         int cappedPotionEffects = ConditionOverload.potCap == -1 ?
                 target.getActivePotionEffects().stream().filter((PotionEffect potionEffect) -> potionEffect.getPotion().isBadEffect()).collect(Collectors.toList()).size() :
                 Math.max(ConditionOverload.potCap, target.getActivePotionEffects().stream().filter((PotionEffect potionEffect) -> potionEffect.getPotion().isBadEffect()).collect(Collectors.toList()).size());
+
+        //factor in if the target is burning
         cappedPotionEffects += target.isBurning() && ConditionOverload.isFireIncluded ? 1 : 0;
-        if (ConditionOverload.isExpo) {
+
+        if (ConditionOverload.addativeEnabled) {
+            return damage + (ConditionOverload.addativeNumber * cappedPotionEffects);
+        } else {
+            if (ConditionOverload.isExpo) {
 //            System.out.println("Number of negative potion effects: " +  target.ge tActivePotionEffects().stream().filter((PotionEffect potionEffect) -> potionEffect.getPotion().isBadEffect()).collect(Collectors.toList()).size());
 //            System.out.println("Damage: " + (float) (damage * Math.min( ConditionOverload.multiCap == -1 ? Integer.MAX_VALUE : ConditionOverload.multiCap,
 //                    Math.pow(ConditionOverload.rate,  cappedPotionEffects))));
-
-            return (float) (damage * Math.min( ConditionOverload.multiCap == -1 ? Integer.MAX_VALUE : ConditionOverload.multiCap,
-                    Math.pow(ConditionOverload.rate,  cappedPotionEffects)));
-        } else {
-            return (float) (damage * Math.min( ConditionOverload.multiCap == -1 ? Integer.MAX_VALUE : ConditionOverload.multiCap,
-                    (1 + (ConditionOverload.rate- 1)  *  cappedPotionEffects)));
+                return (float) (damage * Math.min( ConditionOverload.multiCap == -1 ? Integer.MAX_VALUE : ConditionOverload.multiCap,
+                        Math.pow(ConditionOverload.rate,  cappedPotionEffects)));
+            } else {
+                return (float) (damage * Math.min( ConditionOverload.multiCap == -1 ? Integer.MAX_VALUE : ConditionOverload.multiCap,
+                        (1 + (ConditionOverload.rate- 1)  *  cappedPotionEffects)));
+            }
         }
     }
 
