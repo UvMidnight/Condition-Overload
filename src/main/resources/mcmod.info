@@ -1,0 +1,16 @@
+[
+{
+  "modid": "conditionoverload",
+  "name": "Condition: Overload",
+  "description": "Tinkers construct addon that brings warframe's respective gameplay element, except with potion effects",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "https://www.curseforge.com/minecraft/mc-mods/condition-overload",
+  "updateUrl": "",
+  "authorList": ["UvMidnight"],
+  "credits": "",
+  "logoFile": "icon.png",
+  "screenshots": [],
+  "dependencies": ["tconstruct"]
+}
+]

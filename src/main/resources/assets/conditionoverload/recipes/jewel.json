@@ -1,0 +1,24 @@
+{
+  "type" : "minecraft:crafting_shaped",
+  "pattern" : [
+	"pdp",
+	"dnd",
+	"pdp"
+  ],
+  "key" : {
+	"d": {
+		"type": "forge:ore_dict",
+	  	"ore": "blockDiamond"
+	},
+	"n": {
+		"item": "minecraft:nether_star"
+	},
+	"p": {
+	  "item": "minecraft:dragon_breath"
+	}
+  },
+  "result":
+  {
+	"item": "conditionoverload:wicked_jewel"
+  }
+}
