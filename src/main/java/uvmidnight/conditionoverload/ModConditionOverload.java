@@ -47,6 +47,7 @@ public class ModConditionOverload extends ModifierTrait {
         //debug stuff
         if (ConditionOverload.isDebugEnabled && player instanceof EntityPlayer && !player.world.isRemote) {
             Minecraft mc = Minecraft.getMinecraft();
+
             mc.player.sendMessage(new TextComponentString("Number of potion effects (capped): " + cappedPotionEffects));
             int uncappedPotionEffects = target.getActivePotionEffects().stream().filter((PotionEffect potionEffect) -> potionEffect.getPotion().isBadEffect()).collect(Collectors.toList()).size();
             mc.player.sendMessage(new TextComponentString("Number of uncapped potion effects: " + uncappedPotionEffects));
@@ -55,6 +56,7 @@ public class ModConditionOverload extends ModifierTrait {
             mc.player.sendMessage(new TextComponentString("Would be Multiplicative Damage: " + (float) (damage * Math.min( ConditionOverload.multiCap == -1 ? Integer.MAX_VALUE : ConditionOverload.multiCap,
                     (1 + (ConditionOverload.rate- 1)  *  cappedPotionEffects)))));
             mc.player.sendMessage(new TextComponentString("Would be Additive Damage: " + (damage + ConditionOverload.maxAdditive == -1 ? ConditionOverload.additiveNumber * cappedPotionEffects : Math.min((ConditionOverload.additiveNumber * cappedPotionEffects), ConditionOverload.maxAdditive))));
+
             //display out potion effects
             //I have also forgotten how to use streams. probably for the better.
             for (PotionEffect effect : target.getActivePotionEffects()) {
@@ -75,14 +77,17 @@ public class ModConditionOverload extends ModifierTrait {
         }
 
         if (ConditionOverload.additiveEnabled) {
-            return damage + ConditionOverload.maxAdditive == -1 ? ConditionOverload.additiveNumber * cappedPotionEffects : Math.min((ConditionOverload.additiveNumber * cappedPotionEffects), ConditionOverload.maxAdditive);
+            newDamage += ConditionOverload.maxAdditive == -1 ? ConditionOverload.additiveNumber * cappedPotionEffects : Math.min((ConditionOverload.additiveNumber * cappedPotionEffects), ConditionOverload.maxAdditive);
+            return newDamage;
         } else {
             if (ConditionOverload.isExpo) {
-                    return (float) (damage * Math.min( ConditionOverload.multiCap == -1 ? Integer.MAX_VALUE : ConditionOverload.multiCap,
-                            Math.pow(ConditionOverload.rate,  cappedPotionEffects)));
+                    newDamage += (float) (damage * (Math.min( ConditionOverload.multiCap == -1 ? Integer.MAX_VALUE : ConditionOverload.multiCap,
+                            Math.pow(ConditionOverload.rate,  cappedPotionEffects)) - 1));
+                    return newDamage;
                 } else {
-                    return (float) (damage * Math.min( ConditionOverload.multiCap == -1 ? Integer.MAX_VALUE : ConditionOverload.multiCap,
-                            (1 + (ConditionOverload.rate- 1)  *  cappedPotionEffects)));
+                    newDamage += (float) (damage * (Math.min( ConditionOverload.multiCap == -1 ? Integer.MAX_VALUE : ConditionOverload.multiCap,
+                            (1 + (ConditionOverload.rate- 1)  *  cappedPotionEffects)) - 1));
+                    return newDamage;
                 }
         }
     }
